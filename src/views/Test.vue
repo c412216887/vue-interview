@@ -13,7 +13,7 @@
 </template>
 
 <script>
-
+import mockGenerator from '../mock'
 export default {
   name: 'test',
   data () {
@@ -23,13 +23,30 @@ export default {
     }
   },
   computed: {
-
+    myValue () {
+      return this.$store.state.dataList
+    }
+  },
+  watch: {
+    myValue (value) {
+      this.getData()
+    }
   },
   methods: {
-
+    getData () {
+      this.average = this.$store.getters.getAverage
+      this.dataList = this.$store.getters.getData
+    },
     update () {
-
+      let startIndex = this.dataList.length
+      let number = startIndex + 10
+      mockGenerator(startIndex, number)
+        .then(value => { this.$store.state.dataList.push(...value) })
+        .catch(error => { console.log(error) })
     }
+  },
+  created () {
+    this.$store.dispatch('getDataCall')
   }
 }
 </script>
@@ -39,8 +56,12 @@ export default {
 .test{
 
   .list{
-    display: flex;
-    flex-direction: row;
+      display:table-row;
+
+      div {
+        display:table-cell;
+        padding: 0 0.5em;
+      }
   }
   button{
     margin-top: 10px;
